@@ -8,21 +8,21 @@
 #include "periferic.hpp"
 
 using namespace std;
-Tastatura::Tastatura(string cod, string producator, string denumire, float pret, int stoc, string conexiune, string format, string taste, string iluminare):Periferic(cod, producator, denumire, pret, stoc, conexiune)
+Tastatura::Tastatura(string cod, string producator, string denumire, float pret, int stoc, string conexiune, string format, string taste, string iluminare) : Periferic(cod, producator, denumire, pret, stoc, conexiune)
 {
     this->format = format;
     this->taste = taste;
     this->iluminare = iluminare;
 }
 
-Tastatura::Tastatura(const Tastatura &t):Periferic(t)
+Tastatura::Tastatura(const Tastatura &t) : Periferic(t)
 {
     this->format = t.format;
     this->taste = t.taste;
     this->iluminare = t.iluminare;
 }
 
-Tastatura::Tastatura(string linie):Periferic(linie)
+Tastatura::Tastatura(string linie) : Periferic(linie)
 {
     stringstream s(linie);
     int i, st;
@@ -52,7 +52,7 @@ string Tastatura::ToString()
 string Tastatura::ToFile()
 {
     stringstream s("");
-    s << this->getTip() << "|" << Produs::getCod() << "|" << Produs::getProducator() << "|" << Produs::getDenumire() << "|" << Produs::getPret() << "|" << Produs::getStoc() << "|" << this->getConexiune() << "|" << this->format << "|" << this->taste << "|" << this->iluminare;
+    s << this->getTip() << "|" << Produs::getCod() << "|" << Produs::getProducator() << "|" << Produs::getDenumire() << "|" << Produs::getPret() << "|" << Produs::getStoc() << "|" << this->getConexiune() << "|" << this->format << "|" << this->taste << "|" << this->iluminare << "\n";
     return s.str();
 }
 
@@ -93,5 +93,4 @@ void Tastatura::setIluminare(string iluminare)
 
 Tastatura::~Tastatura()
 {
-    
 }

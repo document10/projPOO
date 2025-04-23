@@ -17,6 +17,11 @@
 
 #include "periferice/periferic.hpp"
 #include "periferice/tastatura.hpp"
+#include "periferice/mouse.hpp"
+#include "periferice/audio.hpp"
+#include "periferice/camera.hpp"
+#include "periferice/display.hpp"
+#include "periferice/portabila.hpp"
 
 using namespace std;
 
@@ -260,6 +265,21 @@ Produs *LinkedList::ReadItem(string linie)
         break;
     case 10:
         return new Tastatura(linie);
+        break;
+    case 11:
+        return new Mouse(linie);
+        break;
+    case 12:
+        return new Audio(linie);
+        break;
+    case 13:
+        return new Camera(linie);
+        break;
+    case 14:
+        return new Display(linie);
+        break;
+    case 15:
+        return new Portabila(linie);
         break;
     default:
         return nullptr;

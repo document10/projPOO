@@ -17,6 +17,11 @@
 
 #include "include/periferice/periferic.hpp"
 #include "include/periferice/tastatura.hpp"
+#include "include/periferice/mouse.hpp"
+#include "include/periferice/audio.hpp"
+#include "include/periferice/camera.hpp"
+#include "include/periferice/display.hpp"
+#include "include/periferice/portabila.hpp"
 
 using namespace std;
 
@@ -24,9 +29,9 @@ int main(int argc, char const *argv[])
 {
     LinkedList *head = new LinkedList("produse.txt");
     head->Remove("0000");
-    // testare adaugare carcasa
-    // Carcasa *c = new Carcasa("9101", "Cooler Master", "MasterBox Q300L", 299.99f, 10, 500, "ATX", "USB 3.0", "Micro-ATX", "RGB");
-    // head->Add(c);
+    // testare adaugare stocare portabila
+    // Portabila *p1 = new Portabila("9000", "Samsung", "SSD 970 EVO", 500.0f, 10, "USB", "SSD", 500.0f, 3500.0f, 3000.0f);
+    // head->Add(p1);
     cout << "Produse in lista:\n" << head->ToString() << endl;
     // test cautare
     cout << "Cautare produs cu codul:" << endl;
