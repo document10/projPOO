@@ -1,0 +1,1 @@
+g++ main.cpp include/produs.cpp include/linkedlist.cpp include/componente/component.cpp include/periferice/periferic.cpp include/componente/procesor.cpp include/componente/memorie.cpp include/componente/stocare.cpp include/componente/placabaza.cpp include/componente/placavideo.cpp include/componente/alimentare.cpp include/componente/carcasa.cpp include/periferice/tastatura.cpp

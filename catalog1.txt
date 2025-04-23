@@ -1,0 +1,9 @@
+0 1222 Canon Camera 1334.00 100
+0 1223 Nikon Camera 20.00 200
+0 1224 Sony Camera 15.50 150
+0 1225 Olympus Camera 18.75 175
+0 1226 Fujifilm Camera 22.00 120
+0 1227 Panasonic Camera 19.99 140
+1 1220 Intel CPU 400.00 2 11
+2 1963 Razer Mouse 200.00 3 USB
+2 1510 Logitech Tastatura 150.00 3 Wireless
