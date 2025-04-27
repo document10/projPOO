@@ -23,45 +23,71 @@
 #include "include/periferice/display.hpp"
 #include "include/periferice/portabila.hpp"
 
+#include "include/statie.hpp"
+
+#include "include/exceptie.hpp"
+
 using namespace std;
 
 int main(int argc, char const *argv[])
 {
     LinkedList *head = new LinkedList("produse.txt");
     head->Remove("0000");
-    // testare adaugare stocare portabila
-    // Portabila *p1 = new Portabila("9000", "Samsung", "SSD 970 EVO", 500.0f, 10, "USB", "SSD", 500.0f, 3500.0f, 3000.0f);
-    // head->Add(p1);
     cout << "Produse in lista:\n" << head->ToString() << endl;
-    // test cautare
-    cout << "Cautare produs cu codul:" << endl;
-    string cod;
-    cin >> cod;
-    Produs *p = head->Search(cod);
-    if (p != nullptr)
-        cout << "Produs gasit: " << p->ToFile() << endl;
-
-    else
-        cout << "Produsul nu a fost gasit!" << endl;
-
-    // test modificare
-    // Memorie *m = (Memorie*)head->Search("1234");
-    // m->setFrecventa(4123.0f);
-    // cout << "Produse dupa modificare:" << endl
-    //      << head->ToString() << endl;
-    // head[0].getData()->setPret(1334.0f);
-    // test stergere
-    cout << "Stergere produs cu codul:" << endl;
-    cin >> cod;
-    if (head->Remove(cod))
-        cout << "Produsul a fost sters!" << endl;
-    else
-        cout << "Produsul nu a fost gasit!" << endl;
-
-    cout << "Produse dupa stergere:" << endl
-         << head->ToString() << endl;
     cout << "Numar produse in lista: " << head->Size() << endl;
-    // testare salvare
-    head->SaveToFile("catalog.txt");
+    Statie *s[1000];
+    int n;
+    if(argc < 3) {
+        cerr << "Argumente insuficiente!" << endl;
+        return 1;
+    }
+    //testare import
+    try
+    {
+        n = Statie::Import(s, argv[1]);
+    }
+    catch(const Exceptie &e)
+    {
+        cerr << e << '\n';
+        exit(1);
+    }
+    catch (const exception &e)
+    {
+        cerr << "Standard exception: " << e.what() << '\n';
+        exit(1);
+    }
+    catch (...)
+    {
+        cerr << "Unknown exception occurred." << '\n';
+        exit(1);
+    }
+    cout << "Numar statii importate: " << n << endl;
+    for (int i = 0; i < n; i++)
+    {
+        cout << "Statie " << i + 1 << ": " << s[i]->getNume() << endl;
+        cout << "Produse in statie:\n" << s[i]->ToString() << endl;
+        cout << "Numar produse in lista: " << s[i]->getHead()->Size() << endl;
+        cout << "Pret total: " << s[i]->PretTotal() << endl;
+    }
+
+    // testare export
+    try{
+        Statie::Export(s, n, argv[2]);
+    }
+    catch(const Exceptie &e)
+    {
+        cerr << e << '\n';
+        exit(1);
+    }
+    catch (const exception &e)
+    {
+        cerr << "Standard exception: " << e.what() << '\n';
+        exit(1);
+    }
+    catch (...)
+    {
+        cerr << "Unknown exception occurred." << '\n';
+        exit(1);
+    }
     return 0;
 }

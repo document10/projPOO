@@ -23,6 +23,8 @@
 #include "periferice/display.hpp"
 #include "periferice/portabila.hpp"
 
+#include "exceptie.hpp"
+
 using namespace std;
 
 LinkedList::LinkedList(Produs *data)
@@ -52,11 +54,12 @@ void LinkedList::LoadFromFile(string numeFisier)
         while (getline(file, line))
         {
             Produs *p = ReadItem(line);
-            // Adaugam produsul in lista
             this->Add(p);
         }
         file.close();
     }
+    else
+        throw Exceptie("Eroare la deschiderea fisierului " + numeFisier, "LinkedList::LoadFromFile", "Eroare fisier");
 }
 void LinkedList::SaveToFile(string numeFisier)
 {
@@ -67,21 +70,19 @@ void LinkedList::SaveToFile(string numeFisier)
         file.close();
     }
     else
-    {
-        cout << "Eroare la deschiderea fisierului!" << endl;
-    }
+        throw Exceptie("Eroare la deschiderea fisierului " + numeFisier, "LinkedList::SaveToFile", "Eroare fisier");
 }
 
 LinkedList::~LinkedList()
 {
-    //nu dealocam nimic
+    // nu dealocam nimic
 }
 
 void LinkedList::Add(Produs *data)
 {
     LinkedList *newNode = new LinkedList(data);
     LinkedList *current = this;
-    
+
     while (current->next != nullptr)
     {
         current = current->next;
@@ -94,15 +95,16 @@ bool LinkedList::Remove(string cod)
 {
     LinkedList *current = this;
     LinkedList *previous = nullptr;
-    
+
     while (current != nullptr && current->data->getCod() != cod)
     {
         previous = current;
         current = current->next;
     }
-    
-    if (current == nullptr) return false; // Codul nu a fost gasit
-    
+
+    if (current == nullptr)
+        return false; // Codul nu a fost gasit
+
     if (previous == nullptr)
     {
         // Elementul de sters este primul
@@ -123,7 +125,7 @@ void LinkedList::Clear()
 {
     LinkedList *current = this;
     LinkedList *nextNode;
-    
+
     while (current != nullptr)
     {
         nextNode = current->next;
@@ -145,7 +147,7 @@ Produs *LinkedList::Search(string cod)
         current = current->next;
     }
     return nullptr;
-}   
+}
 
 string LinkedList::ToString()
 {
@@ -203,7 +205,7 @@ Produs *LinkedList::getData()
     return this->data;
 }
 
-LinkedList LinkedList::operator =(const LinkedList &l)
+LinkedList LinkedList::operator=(const LinkedList &l)
 {
     if (this != &l)
     {
@@ -216,7 +218,7 @@ LinkedList LinkedList::operator =(const LinkedList &l)
     return *this;
 }
 
-LinkedList LinkedList::operator [](int index)
+LinkedList LinkedList::operator[](int index)
 {
     LinkedList *current = this;
     for (int i = 0; i < index && current != nullptr; i++)
@@ -226,9 +228,22 @@ LinkedList LinkedList::operator [](int index)
     return *current;
 }
 
+void LinkedList::operator--(void)
+{
+    if (this->next == nullptr)
+        return;
+    LinkedList *current = this;
+    while (current->next->next != nullptr)
+        current = current->next;
+    delete current->next;
+    current->next = nullptr;
+}
+
 Produs *LinkedList::ReadItem(string linie)
 {
     int i;
+    if (linie.empty())
+        return nullptr;
     float pret;
     sscanf(linie.c_str(), "%i|", &i);
     switch (i)

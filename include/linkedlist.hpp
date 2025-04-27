@@ -17,7 +17,7 @@ private:
     LinkedList *next;
 
 public:
-    LinkedList(Produs *data = nullptr);
+    LinkedList(Produs *data);
     LinkedList(const LinkedList &l);
     LinkedList(string numeFisier);
     void Add(Produs *data);
@@ -34,6 +34,7 @@ public:
     Produs *getData();
     LinkedList operator=(const LinkedList &l);
     LinkedList operator[](int index);
+    void operator--(void);
     ~LinkedList();
     static Produs *ReadItem(string linie);
 };
