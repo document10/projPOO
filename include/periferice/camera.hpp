@@ -1,5 +1,5 @@
-#ifndef CAMERA_HPP
-#define CAMERA_HPP
+#ifndef CAM_HPP
+#define CAM_HPP
 
 #include <iostream>
 #include <stdlib.h>
@@ -11,26 +11,27 @@
 
 using namespace std;
 
-class Camera : public Periferic
+class Cam : public Periferic
 {
 private:
     string clasa;
     int rezolutie;
     float fps;
 public:
-    Camera(string cod, string producator, string denumire, float pret, int stoc, string conexiune, string clasa, int rezolutie, float fps);
-    Camera(const Camera &c);
-    Camera(string linie);
+    Cam(string cod, string producator, string denumire, float pret, int stoc, string conexiune, string clasa, int rezolutie, float fps);
+    Cam(const Cam &c);
+    Cam(string linie);
     string ToString() override;
     string ToFile() override;
     int getTip() override;
+    void setVal(int index, string value) override;
     string getClasa();
     int getRezolutie();
     float getFPS();
     void setClasa(string clasa);
     void setRezolutie(int rezolutie);
     void setFPS(float fps);
-    ~Camera();
+    ~Cam();
 };
 
-#endif //CAMERA_HPP
+#endif //CAM_HPP

@@ -6,6 +6,7 @@
 #include "../produs.hpp"
 #include "component.hpp"
 #include "procesor.hpp"
+#include "../exceptie.hpp"
 
 using namespace std;
 
@@ -51,24 +52,118 @@ Procesor::Procesor(string linie) : Component(linie)
 
 string Procesor::ToString()
 {
-    // char *rez = new char[100];
-    // sprintf(rez, "(%s) %s, %s, %.2f lei, %d in stoc, %d W, %.2f GHz, %d nuclee, %.2f GB RAM maxim, %.2f MB Cache", Produs::getCod().c_str(), Produs::getProducator().c_str(), Produs::getDenumire().c_str(), Produs::getPret(), Produs::getStoc(), Component::getPutere(), this->frecventa, this->nuclee, this->maxMem, this->memCache);
-    // return string(rez);
     stringstream s("");
-    s<<"("<<Produs::getCod()<<") "<<Produs::getProducator()<<", "<<Produs::getDenumire()<<", "<<Produs::getPret()<<" lei, "<<Produs::getStoc()<<" in stoc, "<<Component::getPutere()<<" W, "<<this->frecventa<<" GHz, "<<this->nuclee<<" nuclee,"<<this->maxMem<<" GB RAM maxim,"<<this->memCache<<" MB Cache";
+    s << "(" << Produs::getCod() << ") " << Produs::getProducator() << ", " << Produs::getDenumire() << ", " << Produs::getPret() << " lei, " << Produs::getStoc() << " in stoc, " << Component::getPutere() << " W, " << this->frecventa << " GHz, " << this->nuclee << " nuclee," << this->maxMem << " GB RAM maxim," << this->memCache << " MB Cache";
     return s.str();
 }
 
 string Procesor::ToFile()
 {
-    char *rez = new char[100];
-    sprintf(rez, "%d|%s|%s|%s|%.2f|%d|%d|%.2f|%d|%.2f|%.2f\n", this->getTip(), Produs::getCod().c_str(), Produs::getProducator().c_str(), Produs::getDenumire().c_str(), Produs::getPret(), Produs::getStoc(), Component::getPutere(), this->frecventa, this->nuclee, this->maxMem, this->memCache);
-    return string(rez);
+    stringstream s("");
+    s << this->getTip() << "|" << Produs::getCod() << "|" << Produs::getProducator() << "|" << Produs::getDenumire() << "|" << Produs::getPret() << "|" << Produs::getStoc() << "|" << Component::getPutere() << "|" << this->frecventa << "|" << this->nuclee << "|" << this->maxMem << "|" << this->memCache << "\n";
+    return s.str();
 }
 int Procesor::getTip()
 {
     return 3;
 }
+
+void Procesor::setVal(int index, string value)
+{
+    switch (index)
+    {
+    case 0:
+        Produs::setCod(value);
+        break;
+    case 1:
+        Produs::setProducator(value);
+        break;
+    case 2:
+        Produs::setDenumire(value);
+        break;
+    case 3:
+        // check if value is a float
+        try
+        {
+            Produs::setPret(stof(value));
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Procesor::setVal", "Eroare conversie");
+        }
+        break;
+    case 4:
+        // check if value is an int
+        try
+        {
+            Produs::setStoc(stoi(value));
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Procesor::setVal", "Eroare conversie");
+        }
+        break;
+    case 5:
+        // check if value is an int
+        try
+        {
+            Component::setPutere(stoi(value));
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Procesor::setVal", "Eroare conversie");
+        }
+        break;
+    case 6:
+        // check if value is a float
+        try
+        {
+            this->frecventa = stof(value);
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Procesor::setVal", "Eroare conversie");
+        }
+        break;
+    case 7:
+        // check if value is an int
+        try
+        {
+            this->nuclee = stoi(value);
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Procesor::setVal", "Eroare conversie");
+        }
+        break;
+    case 8:
+        // check if value is a float
+        try
+        {
+            this->maxMem = stof(value);
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Procesor::setVal", "Eroare conversie");
+        }
+        break;
+    case 9:
+        // check if value is a float
+        try
+        {
+            this->memCache = stof(value);
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Procesor::setVal", "Eroare conversie");
+        }
+        break;
+    default:
+        throw Exceptie("Proprietatea nu a fost gasita!", "Procesor::setVal", "Eroare index");
+        break;
+    }
+}
+
 float Procesor::getFrecventa()
 {
     return this->frecventa;
@@ -103,5 +198,4 @@ void Procesor::setMemCache(float memCache)
 }
 Procesor::~Procesor()
 {
-    
 }

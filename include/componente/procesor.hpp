@@ -22,6 +22,7 @@ class Procesor : public Component
     Procesor(string linie);
     string ToString() override;
     string ToFile() override;
+    void setVal(int index, string value) override;
     int getTip() override;
     float getFrecventa();
     int getNuclee();

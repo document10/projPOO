@@ -6,6 +6,7 @@
 #include "../produs.hpp"
 #include "tastatura.hpp"
 #include "periferic.hpp"
+#include "../exceptie.hpp"
 
 using namespace std;
 Tastatura::Tastatura(string cod, string producator, string denumire, float pret, int stoc, string conexiune, string format, string taste, string iluminare) : Periferic(cod, producator, denumire, pret, stoc, conexiune)
@@ -54,6 +55,59 @@ string Tastatura::ToFile()
     stringstream s("");
     s << this->getTip() << "|" << Produs::getCod() << "|" << Produs::getProducator() << "|" << Produs::getDenumire() << "|" << Produs::getPret() << "|" << Produs::getStoc() << "|" << this->getConexiune() << "|" << this->format << "|" << this->taste << "|" << this->iluminare << "\n";
     return s.str();
+}
+
+void Tastatura::setVal(int index, string value)
+{
+    switch (index)
+    {
+    case 0:
+        Produs::setCod(value);
+        break;
+    case 1:
+        Produs::setProducator(value);
+        break;
+    case 2:
+        Produs::setDenumire(value);
+        break;
+    case 3:
+        //check if value is a float
+        try
+        {
+            Produs::setPret(stof(value));
+        }
+        catch (...)
+        {
+            throw Exceptie("Pret invalid!", "Tastatura::setVal", "Exceptie");
+        }
+        break;
+    case 4:
+        //check if value is an int
+        try
+        {
+            Produs::setStoc(stoi(value));
+        }
+        catch (...)
+        {
+            throw Exceptie("Stoc invalid!", "Tastatura::setVal", "Exceptie");
+        }
+        break;
+    case 5:
+        Periferic::setConexiune(value);
+        break;
+    case 6:
+        this->format = value;
+        break;
+    case 7:
+        this->taste = value;
+        break;
+    case 8:
+        this->iluminare = value;
+        break;
+    default:
+        throw Exceptie("Index invalid!", "Tastatura::setVal", "Exceptie");
+        break;
+    }
 }
 
 int Tastatura::getTip()

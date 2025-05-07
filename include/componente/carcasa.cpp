@@ -6,6 +6,7 @@
 #include "../produs.hpp"
 #include "component.hpp"
 #include "carcasa.hpp"
+#include "../exceptie.hpp"
 
 using namespace std;
 
@@ -45,26 +46,87 @@ Carcasa::Carcasa(string linie) : Component(linie)
     getline(s, this->marime, '|');
     getline(s, this->conectori, '|');
     getline(s, this->dimensiune, '|');
-    getline(s,this->lumini,'|');
+    getline(s, this->lumini, '|');
 }
 
 string Carcasa::ToString()
 {
     stringstream s("");
-    s << "(" << Produs::getCod() << ") " << Produs::getProducator() << ", " << Produs::getDenumire() << ", " << Produs::getPret() << " lei, " << Produs::getStoc() << " in stoc, " << Component::getPutere() << " W, marime: " << this->marime << ", conectori: " << this->conectori<<", dimensiune: "<<this->dimensiune<<", lumini: "<<this->lumini;
+    s << "(" << Produs::getCod() << ") " << Produs::getProducator() << ", " << Produs::getDenumire() << ", " << Produs::getPret() << " lei, " << Produs::getStoc() << " in stoc, " << Component::getPutere() << " W, marime: " << this->marime << ", conectori: " << this->conectori << ", dimensiune: " << this->dimensiune << ", lumini: " << this->lumini;
     return s.str();
 }
 
 string Carcasa::ToFile()
 {
     stringstream s("");
-    s << this->getTip() << "|" << Produs::getCod() << "|" << Produs::getProducator() << "|" << Produs::getDenumire() << "|" << Produs::getPret() << "|" << Produs::getStoc() << "|" << Component::getPutere() << "|" << this->marime << "|" << this->conectori<<"|"<<this->dimensiune<<"|"<<this->lumini<<"\n";
+    s << this->getTip() << "|" << Produs::getCod() << "|" << Produs::getProducator() << "|" << Produs::getDenumire() << "|" << Produs::getPret() << "|" << Produs::getStoc() << "|" << Component::getPutere() << "|" << this->marime << "|" << this->conectori << "|" << this->dimensiune << "|" << this->lumini << "\n";
     return s.str();
 }
 
 int Carcasa::getTip()
 {
     return 9;
+}
+
+void Carcasa::setVal(int index, string value)
+{
+    switch (index)
+    {
+    case 0:
+        Produs::setCod(value);
+        break;
+    case 1:
+        Produs::setProducator(value);
+        break;
+    case 2:
+        Produs::setDenumire(value);
+        break;
+    case 3:
+        try
+        {
+            Produs::setPret(stof(value));
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Carcasa::setVal", "Eroare conversie");
+        }
+        break;
+    case 4:
+        try
+        {
+            Produs::setStoc(stoi(value));
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Carcasa::setVal", "Eroare conversie");
+        }
+        break;
+    case 5:
+        try
+        {
+            Component::setPutere(stoi(value));
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Carcasa::setVal", "Eroare conversie");
+        }
+        break;
+    case 6:
+        this->marime = value;
+        break;
+    case 7:
+        this->conectori = value;
+        break;
+    case 8:
+        this->dimensiune = value;
+        break;
+    case 9:
+        this->lumini = value;
+        break;
+    default:
+        Exceptie("Proprietatea nu a fost gasita!", "Carcasa::setVal", "Eroare index");
+        break;
+    }
 }
 
 string Carcasa::getMarime()

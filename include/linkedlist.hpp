@@ -25,15 +25,16 @@ public:
     void Clear();
     void LoadFromFile(string numeFisier);
     void SaveToFile(string numeFisier);
-    Produs *Search(string cod);
+    Produs *Search(string cod,int criteriu=0);
     string ToString();
     string ToFile();
     Produs Last();
     int Size();
     LinkedList *getNext();
     Produs *getData();
+    int getMaxLength();
     LinkedList operator=(const LinkedList &l);
-    LinkedList operator[](int index);
+    Produs *operator[](int index);
     void operator--(void);
     ~LinkedList();
     static Produs *ReadItem(string linie);

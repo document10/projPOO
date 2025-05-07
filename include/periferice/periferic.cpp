@@ -5,6 +5,7 @@
 #include <sstream>
 #include "../produs.hpp"
 #include "periferic.hpp"
+#include "../exceptie.hpp"
 
 using namespace std;
 
@@ -52,6 +53,47 @@ int Periferic::getTip()
 {
     return 2;
 }
+
+void Periferic::setVal(int index, string value)
+{
+    switch (index)
+    {
+    case 0:
+        Produs::setCod(value);
+        break;
+    case 1:
+        Produs::setProducator(value);
+        break;
+    case 2:
+        Produs::setDenumire(value);
+        break;
+    case 3:
+        //check if value is a float
+        try {
+            Produs::setPret(stof(value));
+        }
+        catch (...) {
+            throw Exceptie("Valoarea nu este un numar!", "Periferic::setVal", "Eroare float");
+        }
+        break;
+    case 4:
+        //check if value is an int
+        try {
+            Produs::setStoc(stoi(value));
+        }
+        catch (...) {
+            throw Exceptie("Valoarea nu este un numar!", "Periferic::setVal", "Eroare int");
+        }
+        break;
+    case 5:
+        this->conexiune = value;
+        break;
+    default:
+        throw Exceptie("Proprietatea nu a fost gasita!", "Periferic::setVal", "Eroare index");
+        break;
+    }
+}
+
 string Periferic::getConexiune()
 {
     return this->conexiune;

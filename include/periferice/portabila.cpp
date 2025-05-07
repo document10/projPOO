@@ -6,6 +6,7 @@
 #include "../produs.hpp"
 #include "periferic.hpp"
 #include "portabila.hpp"
+#include "../exceptie.hpp"
 
 using namespace std;
 
@@ -66,6 +67,77 @@ string Portabila::ToFile()
 int Portabila::getTip()
 {
     return 15;
+}
+
+void Portabila::setVal(int index, string value)
+{
+    switch (index)
+    {
+    case 0:
+        Produs::setCod(value);
+        break;
+    case 1:
+        Produs::setProducator(value);
+        break;
+    case 2:
+        Produs::setDenumire(value);
+        break;
+    case 3:
+        //check if value is a float
+        try {
+            Produs::setPret(stof(value));
+        }
+        catch (...) {
+            throw Exceptie("Pret invalid!", "Portabila::setVal", "Exceptie");
+        }
+        Produs::setPret(stof(value));
+        break;
+    case 4:
+        //check if value is an int
+        try {
+            Produs::setStoc(stoi(value));
+        }
+        catch (...) {
+            throw Exceptie("Stoc invalid!", "Portabila::setVal", "Exceptie");
+        }
+        break;
+    case 5:
+        Periferic::setConexiune(value);
+        break;
+    case 6:
+        this->tehnologie = value;
+        break;
+    case 7:
+        //check if value is a float
+        try {
+            this->capacitate = stof(value);
+        }
+        catch (...) {
+            throw Exceptie("Capacitate invalida!", "Portabila::setVal", "Exceptie");
+        }
+        break;
+    case 8:
+        //check if value is a float
+        try {
+            this->readSpeed = stof(value);
+        }
+        catch (...) {
+            throw Exceptie("Read speed invalid!", "Portabila::setVal", "Exceptie");
+        }
+        break;
+    case 9:
+        //check if value is a float
+        try {
+            this->writeSpeed = stof(value);
+        }
+        catch (...) {
+            throw Exceptie("Write speed invalid!", "Portabila::setVal", "Exceptie");
+        }
+        break;
+    default:
+        throw Exceptie("Index invalid!", "Portabila::setVal", "Exceptie");
+        break;
+    }
 }
 
 string Portabila::getTehnologie()

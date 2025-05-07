@@ -55,12 +55,13 @@ float Statie::PretTotal()
 }
 string Statie::ToString()
 {
-    return this->head->ToString();
+    return this->nume + "\n" + this->head->ToString();
 }
 string Statie::ToFile()
 {
     stringstream ss("");
-    ss << this->nume << "\n" << this->head->ToFile() << endl;
+    ss << this->nume << "\n"
+       << this->head->ToFile() << endl;
     return ss.str();
 }
 Statie::~Statie()
@@ -89,10 +90,13 @@ void Statie::LoadFromFile(string numeFisier)
     ifstream file(numeFisier);
     if (!file.is_open())
         throw Exceptie("Eroare la deschiderea fisierului " + numeFisier, "Statie::LoadFromFile", "Eroare fisier");
+    if (file.peek() == file.eof())
+        throw Exceptie("Fisierul " + numeFisier + " este gol!", "Statie::LoadFromFile", "Eroare fisier");
     string line;
     getline(file, line);
     this->nume = line;
-    while(getline(file, line)){
+    while (getline(file, line))
+    {
         Produs *p = this->head->ReadItem(line);
         if (p != nullptr)
             this->head->Add(p);
@@ -104,6 +108,7 @@ void Statie::LoadFromFile(string numeFisier)
 void Statie::SaveToFile(string numeFisier)
 {
     ofstream file(numeFisier);
+    cout<<this->ToFile();
     if (file.is_open())
     {
         file << this->ToFile();
@@ -118,15 +123,15 @@ int Statie::Import(Statie *s[], string numeFolder)
     // Verificam daca folderul exista
     if (!filesystem::exists(numeFolder))
         throw Exceptie("Folderul " + numeFolder + " nu exista!", "Statie::Import", "Eroare folder");
-    
+
     // Verificam daca este un folder
     if (!filesystem::is_directory(numeFolder))
         throw Exceptie("Calea " + numeFolder + " nu este un folder!", "Statie::Import", "Eroare folder");
     // Verificam daca folderul este gol
     if (filesystem::is_empty(numeFolder))
         throw Exceptie("Folderul " + numeFolder + " este gol!", "Statie::Import", "Eroare folder");
-    
-    int i=0;
+
+    int i = 0;
     for (const auto &entry : filesystem::directory_iterator(numeFolder))
     {
         string path = entry.path().string();
@@ -144,11 +149,11 @@ void Statie::Export(Statie *s[], int n, string numeFolder)
     // Verificam daca folderul exista
     if (!filesystem::exists(numeFolder))
         throw Exceptie("Folderul " + numeFolder + " nu exista!", "Statie::Export", "Eroare folder");
-    
+
     // Verificam daca este un folder
     if (!filesystem::is_directory(numeFolder))
         throw Exceptie("Calea " + numeFolder + " nu este un folder!", "Statie::Export", "Eroare folder");
-    
+
     for (int i = 0; i < n; i++)
     {
         string path = numeFolder + "/" + s[i]->getNume() + ".txt";

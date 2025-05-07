@@ -6,6 +6,7 @@
 #include "../produs.hpp"
 #include "periferic.hpp"
 #include "mouse.hpp"
+#include "../exceptie.hpp"
 
 using namespace std;
 
@@ -58,13 +59,85 @@ string Mouse::ToString()
 string Mouse::ToFile()
 {
     stringstream s("");
-    s << this->getTip() << "|" << Produs::getCod() << "|" << Produs::getProducator() << "|" << Produs::getDenumire() << "|" << Produs::getPret() << "|" << Produs::getStoc() << "|" << this->getConexiune() << "|" << this->senzor << "|" << this->iluminare << "|" << this->dpi << "|" << this->butoane<< "\n";
+    s << this->getTip() << "|" << Produs::getCod() << "|" << Produs::getProducator() << "|" << Produs::getDenumire() << "|" << Produs::getPret() << "|" << Produs::getStoc() << "|" << this->getConexiune() << "|" << this->senzor << "|" << this->iluminare << "|" << this->dpi << "|" << this->butoane << "\n";
     return s.str();
 }
 int Mouse::getTip()
 {
     return 11;
 }
+
+void Mouse::setVal(int index, string value)
+{
+    switch (index)
+    {
+    case 0:
+        Produs::setCod(value);
+        break;
+    case 1:
+        Produs::setProducator(value);
+        break;
+    case 2:
+        Produs::setDenumire(value);
+        break;
+    case 3:
+        try
+        {
+            Produs::setPret(stof(value));
+        }
+        catch (...)
+        {
+            throw Exceptie("Pret invalid!", "Mouse::setVal", "Exceptie");
+        }
+        break;
+    case 4:
+        // check if value is an integer
+        try
+        {
+            Produs::setStoc(stoi(value));
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoare invalida!", "Mouse::setVal", "Exceptie");
+        }
+        break;
+    case 5:
+        Periferic::setConexiune(value);
+        break;
+    case 6:
+        this->senzor = value;
+        break;
+    case 7:
+        this->iluminare = value;
+        break;
+    case 8:
+        // check if value is an integer
+        try
+        {
+            this->dpi = stoi(value);
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoare invalida!", "Mouse::setVal", "Exceptie");
+        }
+        break;
+    case 9:
+        // check if value is an integer
+        try
+        {
+            this->butoane = stoi(value);
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoare invalida!", "Mouse::setVal", "Exceptie");
+        }
+        break;
+    default:
+        throw Exceptie("Index invalid!", "Mouse::setVal", "Exceptie");
+        break;
+    }
+}
+
 string Mouse::getSenzor()
 {
     return this->senzor;

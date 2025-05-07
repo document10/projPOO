@@ -1,7 +1,9 @@
 #include <iostream>
 #include <stdlib.h>
+#include <cstring>
 #include <string.h>
 #include <fstream>
+
 #include "linkedlist.hpp"
 
 #include "produs.hpp"
@@ -135,15 +137,38 @@ void LinkedList::Clear()
     }
 }
 
-Produs *LinkedList::Search(string cod)
+Produs *LinkedList::Search(string cod, int criteriu)
 {
     LinkedList *current = this;
+    string search = "";
     while (current != nullptr)
     {
-        if (current->data->getCod() == cod)
+        switch (criteriu)
         {
-            return current->data;
+        case 0:
+            search = current->data->getCod();
+            break;
+        case 1:
+            search = current->data->getProducator();
+            break;
+        case 2:
+            search = current->data->getDenumire();
+            break;
+        default:
+            throw Exceptie("Criteriu de cautare invalid", "LinkedList::Search", "Eroare criteriu");
+            break;
         }
+        // Convertim ambele stringuri la litere mici pentru comparatie
+        for (int i = 0; i < search.length(); i++)
+        {
+            search[i] = tolower(search[i]);
+        }
+        for (int i = 0; i < cod.length(); i++)
+            cod[i] = tolower(cod[i]);
+
+        if (strstr(search.c_str(), cod.c_str()) != nullptr || cod == search)
+            return current->data;
+
         current = current->next;
     }
     return nullptr;
@@ -205,6 +230,20 @@ Produs *LinkedList::getData()
     return this->data;
 }
 
+int LinkedList::getMaxLength()
+{
+    int maxLength = 0;
+    LinkedList *current = this;
+    while (current != nullptr)
+    {
+        int length = current->data->ToString().length();
+        if (length > maxLength)
+            maxLength = length;
+        current = current->next;
+    }
+    return maxLength;
+}
+
 LinkedList LinkedList::operator=(const LinkedList &l)
 {
     if (this != &l)
@@ -218,14 +257,14 @@ LinkedList LinkedList::operator=(const LinkedList &l)
     return *this;
 }
 
-LinkedList LinkedList::operator[](int index)
+Produs *LinkedList::operator[](int index)
 {
     LinkedList *current = this;
     for (int i = 0; i < index && current != nullptr; i++)
     {
         current = current->next;
     }
-    return *current;
+    return &(*current->data);
 }
 
 void LinkedList::operator--(void)
@@ -288,7 +327,7 @@ Produs *LinkedList::ReadItem(string linie)
         return new Audio(linie);
         break;
     case 13:
-        return new Camera(linie);
+        return new Cam(linie);
         break;
     case 14:
         return new Display(linie);

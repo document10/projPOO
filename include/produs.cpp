@@ -4,7 +4,9 @@
 #include <fstream>
 #include <sstream>
 #include <format>
+
 #include "produs.hpp"
+#include "exceptie.hpp"
 
 using namespace std;
 
@@ -50,6 +52,47 @@ string Produs::ToFile()
     stringstream s("");
     s << this->getTip() << "|" << this->cod << "|" << this->producator << "|" << this->denumire << "|" << this->pret << "|" << this->stoc << "\n";
     return s.str();
+}
+
+void Produs::setVal(int index, string value)
+{
+    switch (index)
+    {
+    case 0:
+        this->cod = value;
+        break;
+    case 1:
+        this->producator = value;
+        break;
+    case 2:
+        this->denumire = value;
+        break;
+    case 3:
+        // check if value is a float
+        try
+        {
+            this->pret = stof(value);
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Produs::setVal", "Eroare conversie");
+        }
+        break;
+    case 4:
+        // check if value is an int
+        try
+        {
+            this->stoc = stoi(value);
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Produs::setVal", "Eroare conversie");
+        }
+        break;
+    default:
+        throw Exceptie("Proprietatea nu a fost gasita!", "Produs::setVal", "Eroare index");
+        break;
+    }
 }
 
 string Produs::getCod()

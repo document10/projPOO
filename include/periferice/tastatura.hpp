@@ -20,9 +20,10 @@ public:
     Tastatura(const Tastatura &t);
     Tastatura(string linie);
     ~Tastatura();
-    string ToString();
-    string ToFile();
-    int getTip();
+    string ToString() override;
+    string ToFile() override;
+    int getTip() override;
+    void setVal(int index, string value) override;
     string getFormat();
     void setFormat(string format);
     string getTaste();

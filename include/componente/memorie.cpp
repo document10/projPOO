@@ -6,6 +6,7 @@
 #include "../produs.hpp"
 #include "component.hpp"
 #include "memorie.hpp"
+#include "../exceptie.hpp"
 
 using namespace std;
 
@@ -58,13 +59,93 @@ string Memorie::ToString()
 string Memorie::ToFile()
 {
     stringstream s("");
-    s << this->getTip() << "|" << Produs::getCod() << "|" << Produs::getProducator() << "|" << Produs::getDenumire() << "|" << Produs::getPret() << "|" << Produs::getStoc() << "|" << Component::getPutere() << "|" << this->frecventa << "|" << this->capacitate << "|" << this->technologie << "|" << this->conector<<"\n";
+    s << this->getTip() << "|" << Produs::getCod() << "|" << Produs::getProducator() << "|" << Produs::getDenumire() << "|" << Produs::getPret() << "|" << Produs::getStoc() << "|" << Component::getPutere() << "|" << this->frecventa << "|" << this->capacitate << "|" << this->technologie << "|" << this->conector << "\n";
     return s.str();
 }
 
 int Memorie::getTip()
 {
     return 4;
+}
+
+void Memorie::setVal(int index, string value)
+{
+    switch (index)
+    {
+    case 0:
+        Produs::setCod(value);
+        break;
+    case 1:
+        Produs::setProducator(value);
+        break;
+    case 2:
+        Produs::setDenumire(value);
+        break;
+    case 3:
+        // check if value is a float
+        try
+        {
+            Produs::setPret(stof(value));
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Memorie::setVal", "Eroare conversie");
+        }
+        break;
+    case 4:
+        // check if value is an int
+        try
+        {
+            Produs::setStoc(stoi(value));
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Memorie::setVal", "Eroare conversie");
+        }
+        break;
+    case 5:
+        // check if value is an int
+        try
+        {
+            Component::setPutere(stoi(value));
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Memorie::setVal", "Eroare conversie");
+        }
+        break;
+    case 6:
+        // check if value is a float
+        try
+        {
+            this->frecventa = stof(value);
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Memorie::setVal", "Eroare conversie");
+        }
+        break;
+    case 7:
+        // check if value is a float
+        try
+        {
+            this->capacitate = stof(value);
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Memorie::setVal", "Eroare conversie");
+        }
+        break;
+    case 8:
+        this->technologie = value;
+        break;
+    case 9:
+        this->conector = value;
+        break;
+    default:
+        throw Exceptie("Proprietatea nu a fost gasita!", "Memorie::setVal", "Eroare index");
+        break;
+    }
 }
 
 float Memorie::getFrecventa()

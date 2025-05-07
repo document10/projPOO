@@ -22,6 +22,7 @@ public:
     string ToString() override;
     string ToFile() override;
     int getTip() override;
+    void setVal(int index, string value) override;
     string getTipAlimentare();
     string getConectori();
     string getEficienta();

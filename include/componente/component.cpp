@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include "../produs.hpp"
+#include "../exceptie.hpp"
 #include "component.hpp"
 
 using namespace std;
@@ -48,6 +49,55 @@ string Component::ToFile()
     char *rez = new char[100];
     sprintf(rez, "%d|%s|%s|%s|%.2f|%d|%d\n", this->getTip(), Produs::getCod().c_str(), Produs::getProducator().c_str(), Produs::getDenumire().c_str(), Produs::getPret(), Produs::getStoc(), this->putere);
     return string(rez);
+}
+
+void Component::setVal(int index, string value)
+{
+    switch (index)
+    {
+    case 0:
+        Produs::setCod(value);
+        break;
+    case 1:
+        Produs::setProducator(value);
+        break;
+    case 2:
+        Produs::setDenumire(value);
+        break;
+    case 3:
+        try
+        {
+            Produs::setPret(stof(value));
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Component::setVal", "Eroare conversie");
+        }
+        break;
+    case 4:
+        try
+        {
+            Produs::setStoc(stoi(value));
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Component::setVal", "Eroare conversie");
+        }
+        break;
+    case 5:
+        try
+        {
+            Component::setPutere(stoi(value));
+        }
+        catch (...)
+        {
+            throw Exceptie("Valoarea introdusa nu este un numar valid!", "Component::setVal", "Eroare conversie");
+        }
+        break;
+    default:
+        throw Exceptie("Proprietatea nu a fost gasita!", "Component::setVal", "Eroare index");
+        break;
+    }
 }
 
 int Component::getTip()

@@ -21,12 +21,13 @@ public:
     Produs(string linie);
     virtual string ToString();
     virtual string ToFile();
+    virtual int getTip();
+    virtual void setVal(int index,string value);
     string getCod();
     string getProducator();
     string getDenumire();
     float getPret();
     int getStoc();
-    virtual int getTip();
     void setCod(string cod);
     void setProducator(string producator);
     void setDenumire(string denumire);

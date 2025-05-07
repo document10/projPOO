@@ -20,6 +20,7 @@ public:
     Component(string linie);
     string ToString() override;
     string ToFile() override;
+    void setVal(int index, string value) override;
     int getTip() override;
     int getPutere();
     void setPutere(int putere);
