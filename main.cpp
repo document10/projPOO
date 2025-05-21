@@ -168,7 +168,7 @@ int main(int argc, char const *argv[])
                     if(statii.size()==0)GuiLabel((Rectangle){bounds.width+10, 45, 200, 30}, "#113#Nu exista statii");
                     else for (vector<Statie>::iterator it = statii.begin();it!=statii.end();it++)
                     {
-                        string txt = it->getNume()+" ("+it->getCod()+")";
+                        string txt = it->getNume()+" ("+it->getCod()+") pret total:"+to_string(it->PretTotal())+" lei";
                         if(GuiButton((Rectangle){ vectScroll.x, 25+ vectScroll.y + i * 30, static_cast<float>(buttonWidth), 30 }, txt.c_str())&&mousePoint.x<bounds.width)selst = *it;
                         i++;
                     }   
@@ -315,7 +315,7 @@ int main(int argc, char const *argv[])
                 switch (stmode)
                 {
                 case 0:
-                    if(GuiButton((Rectangle){bounds.width+170, 10, 150, 30 }, "#23#Editare"))stmode=2;
+                    if(GuiButton((Rectangle){bounds.width+125, 10, 70, 30 }, "#23#Editare"))stmode=2;
                     for(int i = 0; i < selst.getHead()->Size(); i++)
                     {
                         string text = selst.getHead()->operator[](i)->ToString();
@@ -324,7 +324,7 @@ int main(int argc, char const *argv[])
                     break;
                 case 1:
                     GuiTextBox((Rectangle){ bounds.width+10, 45, winsize.x-1025, 30 }, buff0, 20, true);
-                    if(GuiButton((Rectangle){ bounds.width+165, 10, 100, 30 }, "#112#Confirma")&&strlen(buff0)>0)
+                    if(GuiButton((Rectangle){ bounds.width+125, 10, 100, 30 }, "#112#Confirma")&&strlen(buff0)>0)
                     {
                         int ok = 1;
                         for (vector<Statie>::iterator it = statii.begin();it!=statii.end();it++){
@@ -350,7 +350,7 @@ int main(int argc, char const *argv[])
                     GuiTextBox((Rectangle){ bounds.width+10, 45, winsize.x-1025, 30 }, buff0, 20, true);
                     string text = "Se editeaza:"+selst.ToString();
                     DrawText(text.c_str(), bounds.width+10, 75, 20, WHITE);
-                    if(GuiButton((Rectangle){ bounds.width+320, 10, 100, 30 }, "#112#Confirma")&&strlen(buff0)>0)
+                    if(GuiButton((Rectangle){ bounds.width+280, 10, 80, 30 }, "#112#Confirma")&&strlen(buff0)>0)
                     {
                         switch (modmode)
                         {
@@ -391,13 +391,13 @@ int main(int argc, char const *argv[])
                             break;
                         }
                     }
-                    if(GuiDropdownBox((Rectangle){ bounds.width+165, 10, 150, 30 }, "#31#Editare nume\n#143#Stergere dupa cod", &modmode, active7))active7=!active7;
+                    if(GuiDropdownBox((Rectangle){ bounds.width+125, 10, 150, 30 }, "#31#Editare nume\n#143#Stergere dupa cod", &modmode, active7))active7=!active7;
                     break;
                 }
                 default:
                     break;
                 }
-                if(GuiDropdownBox((Rectangle){ bounds.width+10, 10, 150, 30 }, "#181#Vizualizare\n#07#Adaugare\n#22#Editare", &stmode, active6)){
+                if(GuiDropdownBox((Rectangle){ bounds.width+10, 10, 110, 30 }, "#181#Vizualizare\n#07#Adaugare\n#22#Editare", &stmode, active6)){
                     active6=!active6;
                     strcpy(buff0,"");
                     strcpy(buff1,"");
