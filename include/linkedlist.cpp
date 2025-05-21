@@ -278,7 +278,7 @@ void LinkedList::operator--(void)
     current->next = nullptr;
 }
 
-Produs *LinkedList::ReadItem(string linie)
+Produs* LinkedList::ReadItem(string linie)
 {
     int i;
     if (linie.empty())

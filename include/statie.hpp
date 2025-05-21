@@ -34,8 +34,6 @@ public:
     void setCod(string cod);
     void LoadFromFile(string numeFisier);
     void SaveToFile(string numeFisier);
-    static int Import(Statie *s[], string numeFolder);
-    static void Export(Statie *s[], int n, string numeFolder);
     void operator--(void);
 };
 

@@ -37,7 +37,7 @@ public:
     Produs *operator[](int index);
     void operator--(void);
     ~LinkedList();
-    static Produs *ReadItem(string linie);
+    static Produs* ReadItem(string linie);
 };
 
 #endif // LINKEDLIST_HPP

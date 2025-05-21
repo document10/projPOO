@@ -145,49 +145,6 @@ void Statie::SaveToFile(string numeFisier)
         throw Exceptie("Eroare la deschiderea fisierului " + numeFisier, "Statie::SaveToFile", "Eroare fisier");
 }
 
-int Statie::Import(Statie *s[], string numeFolder)
-{
-    // Verificam daca folderul exista
-    if (!filesystem::exists(numeFolder))
-        throw Exceptie("Folderul " + numeFolder + " nu exista!", "Statie::Import", "Eroare folder");
-
-    // Verificam daca este un folder
-    if (!filesystem::is_directory(numeFolder))
-        throw Exceptie("Calea " + numeFolder + " nu este un folder!", "Statie::Import", "Eroare folder");
-    // Verificam daca folderul este gol
-    if (filesystem::is_empty(numeFolder))
-        throw Exceptie("Folderul " + numeFolder + " este gol!", "Statie::Import", "Eroare folder");
-
-    int i = 0;
-    for (const auto &entry : filesystem::directory_iterator(numeFolder))
-    {
-        string path = entry.path().string();
-        if (path.find(".txt") != string::npos)
-        {
-            s[i] = new Statie(path);
-            i++;
-        }
-    }
-    return i;
-}
-
-void Statie::Export(Statie *s[], int n, string numeFolder)
-{
-    // Verificam daca folderul exista
-    if (!filesystem::exists(numeFolder))
-        throw Exceptie("Folderul " + numeFolder + " nu exista!", "Statie::Export", "Eroare folder");
-
-    // Verificam daca este un folder
-    if (!filesystem::is_directory(numeFolder))
-        throw Exceptie("Calea " + numeFolder + " nu este un folder!", "Statie::Export", "Eroare folder");
-
-    for (int i = 0; i < n; i++)
-    {
-        string path = numeFolder + "/" + s[i]->getNume() + ".txt";
-        s[i]->SaveToFile(path);
-    }
-}
-
 void Statie::operator--(void)
 {
     this->head->operator--();
