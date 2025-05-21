@@ -187,3 +187,8 @@ void Statie::Export(Statie *s[], int n, string numeFolder)
         s[i]->SaveToFile(path);
     }
 }
+
+void Statie::operator--(void)
+{
+    this->head->operator--();
+}
