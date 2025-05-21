@@ -35,7 +35,7 @@ public:
     void setWriteSpeed(float writespeed);
     void setIOPS(float iops);
     void setTehnologie(string tehnologie);
-    ~Stocare();
+    ~Stocare() override;
 };
 
 #endif // STOCARE_HPP

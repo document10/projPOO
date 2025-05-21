@@ -24,7 +24,7 @@ public:
     void setVal(int index, string value) override;
     string getConexiune();
     void setConexiune(string conexiune);
-    ~Periferic();
+    ~Periferic() override;
 };
 
 

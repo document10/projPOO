@@ -29,7 +29,7 @@ public:
     void setTipAlimentare(string tip);
     void setConectori(string conectori);
     void setEficienta(string eficienta);
-    ~Alimentare();
+    ~Alimentare() override;
 };
 
 

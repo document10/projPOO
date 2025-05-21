@@ -33,6 +33,6 @@ public:
     void setDenumire(string denumire);
     void setPret(float pret);
     void setStoc(int stoc);
-    ~Produs();
+    virtual ~Produs();
 };
 #endif // PRODUS_HPP

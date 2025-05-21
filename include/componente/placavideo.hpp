@@ -35,7 +35,7 @@ public:
     void setUnits(int units);
     void setTops(int tops);
     void setVram(float vram);
-    ~PlacaVideo();
+    ~PlacaVideo() override;
 };
 
 #endif //PLACAVIDEO_HPP

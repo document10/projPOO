@@ -34,7 +34,7 @@ public:
     void setRezolutie(int rezolutie);
     void setRefreshRate(float refreshRate);
     void setDiagonala(int diagonala);
-    ~Display();
+    ~Display() override;
 };
 
 #endif //DISPLAY_HPP

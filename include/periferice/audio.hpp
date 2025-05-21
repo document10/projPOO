@@ -31,7 +31,7 @@ public:
     void setOperare(string operare);
     void setPutere(int putere);
     void setCanale(float canale);
-    ~Audio();
+    ~Audio() override;
 };
 
 #endif //AUDIO_HPP

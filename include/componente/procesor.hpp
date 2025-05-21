@@ -32,7 +32,7 @@ class Procesor : public Component
     void setNuclee(int nuclee);
     void setMaxMem(float maxMem);
     void setMemCache(float memCache);
-    ~Procesor();
+    ~Procesor() override;
 };
 
 #endif //PROCESOR_HPP

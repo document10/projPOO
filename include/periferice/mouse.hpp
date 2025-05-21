@@ -32,7 +32,7 @@ public:
     void setIluminare(string iluminare);
     void setDPI(int dpi);
     void setButoane(int butoane);
-    ~Mouse();
+    ~Mouse() override;
 };
 
 #endif //MOUSE_HPP

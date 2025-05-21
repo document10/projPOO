@@ -24,7 +24,7 @@ public:
     int getTip() override;
     int getPutere();
     void setPutere(int putere);
-    ~Component();
+    ~Component() override;
 };
 
 #endif // COMPONENT_HPP

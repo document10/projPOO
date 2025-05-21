@@ -77,7 +77,7 @@ void LinkedList::SaveToFile(string numeFisier)
 
 LinkedList::~LinkedList()
 {
-    // nu dealocam nimic
+    
 }
 
 void LinkedList::Add(Produs *data)
@@ -159,11 +159,11 @@ Produs *LinkedList::Search(string cod, int criteriu)
             break;
         }
         // Convertim ambele stringuri la litere mici pentru comparatie
-        for (int i = 0; i < search.length(); i++)
+        for (int i = 0; i < static_cast<int>(search.length()); i++)
         {
             search[i] = tolower(search[i]);
         }
-        for (int i = 0; i < cod.length(); i++)
+        for (int i = 0; i < static_cast<int>(cod.length()); i++)
             cod[i] = tolower(cod[i]);
 
         if (strstr(search.c_str(), cod.c_str()) != nullptr || cod == search)
@@ -283,7 +283,6 @@ Produs *LinkedList::ReadItem(string linie)
     int i;
     if (linie.empty())
         return nullptr;
-    float pret;
     sscanf(linie.c_str(), "%i|", &i);
     switch (i)
     {

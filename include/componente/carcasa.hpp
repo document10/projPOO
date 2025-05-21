@@ -32,7 +32,7 @@ public:
     void setConectori(string conectori);
     void setDimensiune(string dimensiune);
     void setLumini(string lumini);
-    ~Carcasa();
+    ~Carcasa() override;
 };
 
 #endif //CARCASA_HPP

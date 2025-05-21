@@ -2,7 +2,7 @@
 CXX = g++
 
 # Compiler flags
-CXXFLAGS = -Wall -g -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+CXXFLAGS = -O3 -Wall -Werror -g -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 
 # Target executable
 TARGET = main

@@ -1,11 +1,12 @@
 //baza
 #include <iostream>
+#include <cstdlib>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <fstream>
 #include <sstream>
-#include <list>
+#include <vector>
 #include <algorithm>
 #include <filesystem>
 #include <math.h>
@@ -46,19 +47,28 @@ int main(int argc, char const *argv[])
 {   
     string numeFisier = "produse.txt";
     string statiiDir = "statii/";
+    if(!filesystem::exists(numeFisier)){
+        ofstream file(numeFisier);
+        file.close();
+    }
     LinkedList *head = new LinkedList(numeFisier);
-    head->Remove("0000");
-    
-    list<Statie> statii;
-    for (const auto &entry : filesystem::directory_iterator(statiiDir))
+
+    vector<Statie> statii;
+    if (!filesystem::exists(statiiDir))
+    {
+        filesystem::create_directory(statiiDir);
+    }
+    if(!filesystem::is_empty(statiiDir))for (const auto &entry : filesystem::directory_iterator(statiiDir))
     {
         string path = entry.path().string();
         if (path.find(".txt") != string::npos)
         {
             Statie sn(path);
-            statii.push_front(sn);
+            statii.push_back(sn);
         }
     }
+    else cout<<"#113#Nu exista statii in folderul "<<statiiDir<<endl;
+    
     int screenWidth = 1500;
     int screenHeight = 750;
     int buttonWidth = head->getMaxLength() * 7;
@@ -67,6 +77,9 @@ int main(int argc, char const *argv[])
     int editmode = 0;
     int addmode = 0;
     int searchmode = 0;
+    int stmode = 0;
+    int modmode = 0;
+    int addst=statii.size();
 
     string editvals[16]={
         "#216#Cod\n#141#Producator\n#215#Denumire\n#146#Pret\n#96#Stoc",
@@ -87,23 +100,31 @@ int main(int argc, char const *argv[])
         "#216#Cod\n#141#Producator\n#215#Denumire\n#146#Pret\n#96#Stoc\n#144#Conexiune\nTehnologie\nCapacitate\nReadSpeed\nWriteSpeed"
     };
     string optext = "";
+    string scrolltext = "";
+
     char buff0[100]="";
     char buff1[100]="";
     char buff2[100]="";
-    char buff3[100]="";
-    char buff4[100]="";
+    // char buff3[100]="";
+    // char buff4[100]="";
     
     bool active = false;
     bool active2 = false;
     bool active3 = false;
     bool active4 = false;
-    
+    bool active5 = false;
+    bool active6 = false;
+    bool active7 = false;
+
     Vector2 vectScroll = { 1000, 1000 };
     
     Rectangle rect = { 0, 0, 1000,static_cast<float>(screenHeight) };
     Rectangle bounds = { 0, 0, 1000, static_cast<float>(screenHeight) };
-    Rectangle content = { 10, 10, static_cast<float>(buttonWidth+25), static_cast<float>(head->Size() * 30) };
+    Rectangle content = { 10, 10, static_cast<float>(buttonWidth), static_cast<float>(head->Size() * 30) };
+
     string selected = head->Last().getCod();
+    Statie selst("GOL",new Produs("0000","NEDEFINIT","NEDEFINIT",0,0));
+    if(statii.size()>0)selst=statii.back();
 
     InitWindow(screenWidth, screenHeight, "Manager Magazin PC");
     SetTargetFPS(60);
@@ -111,13 +132,12 @@ int main(int argc, char const *argv[])
     SetWindowState(FLAG_WINDOW_RESIZABLE);
     SetWindowMinSize(screenWidth, screenHeight);
     GuiLoadStyle("genesis.rgs");
-    SetWindowIcon(LoadImage("em1.png"));
+    SetWindowIcon(LoadImage("icon.png"));
     GuiSetStyle(BUTTON, TEXT_ALIGNMENT, 0);
     GuiSetStyle(DEFAULT, TEXT_PADDING, 0);
     GuiSetStyle(BUTTON,BORDER_WIDTH,1);
     GuiSetStyle(DROPDOWNBOX, TEXT_ALIGNMENT, 0);
     Vector2 winsize={static_cast<float>(screenWidth),static_cast<float>(screenHeight)};
-    int *sel=new int(1);
     while (!WindowShouldClose())
     {
         winsize = (Vector2){static_cast<float>(GetRenderWidth()),static_cast<float>(GetRenderHeight())};
@@ -125,158 +145,276 @@ int main(int argc, char const *argv[])
             rect.height = winsize.y;
             bounds.height = winsize.y;
             ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR))); 
-            string text = "#214#Produse in lista: " + to_string(head->Size());
-            GuiScrollPanel(bounds, text.c_str(), content,&vectScroll , &rect);
+            GuiScrollPanel(bounds, scrolltext.c_str(), content,&vectScroll , &rect);
+            Vector2 mousePoint = GetMousePosition();
             BeginScissorMode(0, 0, bounds.width-13, bounds.height-13);
-                if(opmode==0){
+            if(!opmode){
+                    scrolltext = "#214#Produse in lista: " + to_string(head->Size()-1);
+                    content.height=static_cast<float>((head->Size())* 30);
                     optext="#96#Produse";
-                    if(head->Size()==0)DrawText("fara produse",vectScroll.x,vectScroll.y+25,30,RED);
-                    else for(int i = 0; i < head->Size(); i++)
+                    for(int i = 1; i < head->Size(); i++)
                     {
                         string text = head->operator[](i)->ToString();
-                        if (GuiButton((Rectangle){ vectScroll.x, 25+ vectScroll.y + i * 30, static_cast<float>(text.length()*7), 30 }, text.c_str()))selected = head->operator[](i)->getCod();
+                        if (selected == head->operator[](i)->getCod())text = "#44#"+text;
+                        if (GuiButton((Rectangle){ vectScroll.x, 25+ vectScroll.y + (i-1) * 30, static_cast<float>(buttonWidth), 30 }, text.c_str())&&mousePoint.x<bounds.width)selected = head->operator[](i)->getCod();
                     }
+                    if (GuiButton((Rectangle){ vectScroll.x, 25+ vectScroll.y + (head->Size()-1) * 30, static_cast<float>(buttonWidth), 30 }, "#08#Produs nou")&&mousePoint.x<bounds.width)lookmode=2;
                 }
                 else {
+                    content.height=static_cast<float>((statii.size()+1)* 30);
                     optext = "#181#Statii";
+                    scrolltext = "#214#Nr statii: " + to_string(statii.size());
                     int i = 0;
-                    for (list<Statie>::iterator it = statii.begin();it!=statii.end();it++)
+                    if(statii.size()==0)GuiLabel((Rectangle){bounds.width+10, 45, 200, 30}, "#113#Nu exista statii");
+                    else for (vector<Statie>::iterator it = statii.begin();it!=statii.end();it++)
                     {
-                        string txt = it->ToString();
-                        DrawText(txt.c_str(),10,25+i*(it->getHead()->Size()+1)*20,10,WHITE);
+                        string txt = it->getNume()+" ("+it->getCod()+")";
+                        if(GuiButton((Rectangle){ vectScroll.x, 25+ vectScroll.y + i * 30, static_cast<float>(buttonWidth), 30 }, txt.c_str())&&mousePoint.x<bounds.width)selst = *it;
                         i++;
                     }   
+                    if(GuiButton((Rectangle){ vectScroll.x, 25+ vectScroll.y + i * 30, static_cast<float>(buttonWidth), 30 }, "#08#Adaugare statie")&&mousePoint.x<bounds.width)stmode=1;
                     
                 }
             EndScissorMode();
-            if(GuiButton((Rectangle){925,0,75,25},optext.c_str()))opmode=!opmode;
-            switch (lookmode)
-            {
-                case 0:
-                    {
-                        string text = head->Search(selected)->ToString();
-                        replace(text.begin(),text.end(),',','\n');
-                        DrawText(text.c_str(), rect.width+10, 50, 20, WHITE);
-                        if (GuiButton((Rectangle){rect.width+125, 10, 70, 30 }, "#143#Sterge"))
+            if(GuiButton((Rectangle){bounds.width-75,0,75,25},optext.c_str()))opmode=!opmode;
+            if(!opmode){
+                switch (lookmode)
+                {
+                    case 0:
                         {
-                            head->Remove(selected);
-                            cout<<"eliminat "<<selected<<"\n";
-                            head->SaveToFile(numeFisier);
-                            selected = head->Last().getCod();
+                            string text = head->Search(selected)->ToString();
+                            replace(text.begin(),text.end(),',','\n');
+                            DrawText(text.c_str(), bounds.width+10, 50, 20, WHITE);
+                            if (GuiButton((Rectangle){bounds.width+125, 10, 70, 30 }, "#143#Sterge"))
+                            {
+                                head->Remove(selected);
+                                head->SaveToFile(numeFisier);
+                                selected = head->Last().getCod();
+                            }
+                            if (GuiButton((Rectangle){bounds.width+200, 10, 70, 30 }, "#22#Editare")){
+                                lookmode=3;
+                            }
                         }
-                        if (GuiButton((Rectangle){rect.width+200, 10, 70, 30 }, "#22#Editare")){
-                            lookmode=3;
+                        break;
+                    case 1:
+                        GuiTextBox((Rectangle){ bounds.width+10, 45, winsize.x-1025, 30 }, buff1, 20, true);
+                        if(GuiButton((Rectangle){ bounds.width+240, 10, 100, 30 }, "#112#Confirma")&&strlen(buff1)>0)
+                        {
+                            Produs *p =nullptr;
+                            if (buff1[0] != '\0')p = head->Search(string(buff1),searchmode);
+                            if(p != nullptr)
+                            {
+                                selected = p->getCod();
+                                strcpy(buff1,"");
+                                lookmode=0;
+                            }
                         }
+                        if(GuiDropdownBox((Rectangle){ bounds.width+125, 10, 110, 30 }, "#10#Cod\n#141#Producator\n#215#Denumire",&searchmode,active4))active4=!active4;
+                    break;
+                    case 2:
+                        Produs *p;
+                        p=nullptr;
+                        GuiTextBox((Rectangle){ bounds.width+10, 45, winsize.x-1025, 30 }, buff0, 20, true);
+                        if(GuiButton((Rectangle){ bounds.width+290, 10, 100, 30 }, "#112#Confirma")&&strlen(buff0)>2)
+                        {
+                            if(head->Search(string(buff0))==nullptr){
+                                stringstream ss("");
+                                ss<<addmode<<"|"<<buff0<<"|0|0|0|0|0|0|0|0|0|0|0|0|0|0";
+                                p=head->ReadItem(ss.str());
+                                head->Add(p);
+                                head->SaveToFile(numeFisier);
+                                selected = string(buff0);
+                                strcpy(buff0,"");
+                                buttonWidth = head->getMaxLength() * 7;
+                                content.width = static_cast<float>(buttonWidth);
+                                lookmode=3;
+                                editmode=1;
+                            }
+                            else
+                            {
+                                strcpy(buff0,"#113#Codul exista deja");
+                                break;
+                            }
+                        }
+                        GuiLabel((Rectangle){ bounds.width+10, 75, 200, 30 }, "#10#Introduceti codul produsului");
+                        if(GuiDropdownBox((Rectangle){ bounds.width+125, 10, 160, 30 }, "#10#Produs Generic\n#179#Component generic\n#144#Periferic generic\n#206#Procesor\n#207#Memorie\n#203#Stocare\n#194#Placa de baza\n#14#Placa video\n#145#Alimentare\n#102#Carcasa\n#176#Tastatura\n#21#Mouse\n#122#Sistem audio\n#184#Camera\n#181#Display\n#180#Stocare Portabila",&addmode,active3))active3=!active3;
+                        break;
+                    case 3:
+                        {
+                            p=head->Search(selected);
+                            GuiTextBox((Rectangle){ bounds.width+10, 45, winsize.x-1025, 30},buff1,20,true);
+                            if(GuiButton((Rectangle){ bounds.width+280, 10, 100, 30},"#112#Confirma")&&strlen(buff1)>0){
+                                if(editmode==0)
+                                {
+                                    if(head->Search(string(buff1))!=nullptr)
+                                    {
+                                        strcpy(buff1,"#113#Codul exista deja");
+                                        break;
+                                    }
+                                }
+                                try
+                                {
+                                    p->setVal(editmode,string(buff1));
+                                    head->SaveToFile(numeFisier);
+                                    editmode++;
+                                    selected = p->getCod();
+                                    strcpy(buff1,"");
+                                }
+                                catch(Exceptie &e)
+                                {
+                                    string err = "#113#"+e.getMesaj();
+                                    strcpy(buff1,err.c_str());
+                                    break;
+                                }
+                            }
+                            string text = head->Search(selected)->ToString();
+                            replace(text.begin(),text.end(),',','\n');
+                            GuiLabel((Rectangle){ bounds.width+10, 100, 200, 30 }, "#23#Se editeaza:");
+                            DrawText(text.c_str(), bounds.width+10, 130, 20, BLUE);
+                            if(p->getStoc()>0){
+                                GuiLabel((Rectangle){ bounds.width+10, 75, 200, 30 }, "#177#Adauga la statie:");
+                                string allst="";
+                                for (vector<Statie>::iterator it = statii.begin();it!=statii.end();it++)
+                                {
+                                    if(it->getHead()->Search(p->getCod())==nullptr)allst+=it->getNume()+" ("+it->getCod()+")\n";
+                                }
+                                allst+="Anuleaza";
+                                if(GuiDropdownBox((Rectangle){ bounds.width+150, 75, 200, 30 },allst.c_str(),&addst,active5)){
+                                    active5=!active5;
+                                    if(!active5&&addst<static_cast<int>(statii.size())&&statii[addst].getHead()->Search(p->getCod())==nullptr){
+                                        cout<<"Adaugare produs in statia "<<statii[addst].getNume()<<endl;
+                                        statii[addst].Add(p);
+                                        statii[addst].SaveToFile(statiiDir+statii[addst].getCod()+".txt");
+                                    }
+                                }
+                            }
+                            if(GuiDropdownBox((Rectangle){ bounds.width+125, 10, 150, 30 },editvals[p->getTip()].c_str(),&editmode,active2))active2=!active2;
+                            break;
+                        }
+                    case 4:{
+                        GuiLabel((Rectangle){ bounds.width+10, 40, 150, 30 }, "#06#Copie de siguranta");
+                        GuiTextBox((Rectangle){ bounds.width+170, 40, 200, 30 }, buff2, 20, true);
+                        if(GuiButton((Rectangle){ bounds.width+380, 40, 100, 30 }, "#112#Confirma")&&strlen(buff2)>0)
+                        {
+                            head->SaveToFile(string(buff2)+".txt");
+                            strcpy(buff2,"");
+                        }
+                        break;
+                    }
+                    default:
+                        DrawText("Lipseste", bounds.width+10, 100, 20, WHITE);
+                        break;
+                }
+                if(GuiDropdownBox((Rectangle){bounds.width+10,10,110,30}, "#21#Vizualizare\n#42#Cautare\n#08#Adaugare\n#22#Modificare\n#142#Setari",&lookmode,active)){
+                    active=!active;
+                    strcpy(buff0,"");
+                    strcpy(buff1,"");
+                }
+            }
+            else{
+                switch (stmode)
+                {
+                case 0:
+                    if(GuiButton((Rectangle){bounds.width+170, 10, 150, 30 }, "#23#Editare"))stmode=2;
+                    for(int i = 0; i < selst.getHead()->Size(); i++)
+                    {
+                        string text = selst.getHead()->operator[](i)->ToString();
+                        DrawText(text.c_str(), bounds.width+10, 50 + i * 30, 20, WHITE);
                     }
                     break;
                 case 1:
-                    GuiTextBox((Rectangle){ rect.width+10, 45, winsize.x-1025, 30 }, buff1, 20, true);
-                    if(GuiButton((Rectangle){ rect.width+240, 10, 100, 30 }, "#112#Confirma")&&strlen(buff1)>0)
+                    GuiTextBox((Rectangle){ bounds.width+10, 45, winsize.x-1025, 30 }, buff0, 20, true);
+                    if(GuiButton((Rectangle){ bounds.width+165, 10, 100, 30 }, "#112#Confirma")&&strlen(buff0)>0)
                     {
-                        Produs *p =nullptr;
-                        if (buff1[0] != '\0')p = head->Search(string(buff1),searchmode);
-                        if(p != nullptr)
-                        {
-                            selected = p->getCod();
-                            cout << "Produs gasit: " << p->getCod() << endl;
-                            strcpy(buff1,"");
-                            lookmode=0;
+                        int ok = 1;
+                        for (vector<Statie>::iterator it = statii.begin();it!=statii.end();it++){
+                            if(it->getCod()==string(buff0))ok=0;
                         }
-                    }
-                    if(GuiDropdownBox((Rectangle){ rect.width+125, 10, 110, 30 }, "#10#Cod\n#141#Producator\n#215#Denumire",&searchmode,active4))active4=!active4;
-                break;
-                case 2:
-                    Produs *p;
-                    p=nullptr;
-                    GuiTextBox((Rectangle){ rect.width+10, 45, winsize.x-1025, 30 }, buff0, 20, true);
-                    if(GuiButton((Rectangle){ rect.width+290, 10, 100, 30 }, "#112#Confirma")&&strlen(buff0)>2)
-                    {
-                        if(head->Search(string(buff0))==nullptr){
-                            stringstream ss("");
-                            ss<<addmode;
-                            ss<<"|";
-                            ss<<string(buff0);
-                            ss<<"|0|0|0|0|0|0|0|0|0|0|0|0|0|0";
-                            p=head->ReadItem(ss.str());
-                            head->Add(p);
-                            head->SaveToFile(numeFisier);
-                            selected = string(buff0);
+                        if(ok){
+                            Statie s(buff0, new LinkedList(new Produs("0000","fara","NEDEF",0.0f,0)),string(buff0));
+                            statii.push_back(s);
+                            selst = s;
                             strcpy(buff0,"");
-                            lookmode=3;
-                            editmode=1;
-                            content.height=static_cast<float>(head->Size() * 30);
+                            s.SaveToFile(statiiDir+s.getCod()+".txt");
+                            stmode=2;
                         }
-                        else
-                        {
+                        else{
                             strcpy(buff0,"#113#Codul exista deja");
                             break;
                         }
                     }
-                    GuiLabel((Rectangle){ rect.width+10, 75, 200, 30 }, "#10#Introduceti codul produsului");
-                    if(GuiDropdownBox((Rectangle){ rect.width+125, 10, 160, 30 }, "#10#Produs Generic\n#179#Component generic\n#144#Periferic generic\n#206#Procesor\n#207#Memorie\n#203#Stocare\n#194#Placa de baza\n#14#Placa video\n#145#Alimentare\n#102#Carcasa\n#176#Tastatura\n#21#Mouse\n#122#Sistem audio\n#184#Camera\n#181#Display\n#180#Stocare Portabila",&addmode,active3))active3=!active3;
                     break;
-                case 3:
+                case 2:
+                {
+
+                    GuiTextBox((Rectangle){ bounds.width+10, 45, winsize.x-1025, 30 }, buff0, 20, true);
+                    string text = "Se editeaza:"+selst.ToString();
+                    DrawText(text.c_str(), bounds.width+10, 75, 20, WHITE);
+                    if(GuiButton((Rectangle){ bounds.width+320, 10, 100, 30 }, "#112#Confirma")&&strlen(buff0)>0)
                     {
-                        p=head->Search(selected);
-                        GuiTextBox((Rectangle){ rect.width+10, 45, winsize.x-1025, 30},buff1,20,true);
-                        if(GuiButton((Rectangle){ rect.width+280, 10, 100, 30},"#112#Confirma")&&strlen(buff1)>0){
-                            if(editmode==0)
-                            {
-                                if(head->Search(string(buff1))!=nullptr)
+                        switch (modmode)
+                        {
+                        case 0:
+                        {
+                            int index = 0;
+                            for (vector<Statie>::iterator it = statii.begin();it!=statii.end();it++){
+                                if(it->getCod()==selst.getCod())break;
+                                index++;
+                            }
+                            statii[index].setNume(string(buff0));
+                            selst.setNume(string(buff0));
+                            statii[index].SaveToFile(statiiDir+selst.getCod()+".txt");
+                            strcpy(buff0,"");
+                            break;
+                        }
+                        case 1:
+                        {
+                            if(selst.getHead()->Size()>1){
+                                selst.Remove(string(buff0));
+                                selst.SaveToFile(statiiDir+selst.getCod()+".txt");
+                                Produs *p = nullptr;
+                                p = head->Search(string(buff0));
+                                if(p != nullptr)
                                 {
-                                    strcpy(buff1,"#113#Codul exista deja");
-                                    break;
+                                    p->setStoc(p->getStoc() + 1);
+                                    head->SaveToFile(numeFisier);
                                 }
+                                strcpy(buff0,"");
                             }
-                            try
-                            {
-                                p->setVal(editmode,string(buff1));
-                                head->SaveToFile(numeFisier);
-                                editmode++;
-                                selected = p->getCod();
-                                strcpy(buff1,"");
-                            }
-                            catch(Exceptie &e)
-                            {
-                                string err = "#113#"+e.getMesaj();
-                                strcpy(buff1,err.c_str());
+                            else{
+                                strcpy(buff0,"#113#Nu se poate sterge ultimul produs din statie");
                                 break;
                             }
+                            break;    
                         }
-                        string text = head->Search(selected)->ToString();
-                        replace(text.begin(),text.end(),',','\n');
-                        GuiLabel((Rectangle){ rect.width+10, 70, 200, 30 }, "#23#Se editeaza:");
-                        DrawText(text.c_str(), rect.width+10, 100, 20, BLUE);
-                        if(GuiDropdownBox((Rectangle){ rect.width+125, 10, 150, 30 },editvals[p->getTip()].c_str(),&editmode,active2))active2=!active2;
-                        break;
+                        default:
+                            break;
+                        }
                     }
-                case 4:{
-                    GuiLabel((Rectangle){ rect.width+10, 50, 150, 30 }, "#06#Copie de siguranta");
-                    GuiTextBox((Rectangle){ rect.width+10, 80, 200, 30 }, buff2, 20, true);
-                    if(GuiButton((Rectangle){ rect.width+220, 80, 100, 30 }, "#112#Confirma")&&strlen(buff2)>0)
-                    {
-                        stringstream ss("");
-                        ss<<buff2;
-                        ss<<".txt";
-                        head->SaveToFile(ss.str());
-                        strcpy(buff2,"");
-                    }
+                    if(GuiDropdownBox((Rectangle){ bounds.width+165, 10, 150, 30 }, "#31#Editare nume\n#143#Stergere dupa cod", &modmode, active7))active7=!active7;
                     break;
                 }
                 default:
-                    DrawText("Lipseste", rect.width+10, 100, 20, WHITE);
                     break;
-            }
-            if(GuiDropdownBox((Rectangle){rect.width+10,10,110,30}, "#21#Vizualizare\n#42#Cautare\n#08#Adaugare\n#22#Modificare\n#142#Setari",&lookmode,active)){
-                active=!active;
-                strcpy(buff0,"");
-                strcpy(buff1,"");
+                }
+                if(GuiDropdownBox((Rectangle){ bounds.width+10, 10, 150, 30 }, "#181#Vizualizare\n#07#Adaugare\n#22#Editare", &stmode, active6)){
+                    active6=!active6;
+                    strcpy(buff0,"");
+                    strcpy(buff1,"");
+                }
             }
             
         EndDrawing();
     }
 
     CloseWindow();
+
+    head->Remove("0000");
     head->SaveToFile(numeFisier);
+    cout<<"Stoc salvat!"<<endl;
+    for (vector<Statie>::iterator it = statii.begin();it!=statii.end();it++){
+        it->SaveToFile(statiiDir+it->getCod()+".txt");
+    }
+    cout<<"Statii salvate!"<<endl;
     return 0;
 }

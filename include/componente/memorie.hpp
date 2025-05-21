@@ -33,7 +33,7 @@ class Memorie : public Component
     void setCapacitate(float capacitate);
     void setTechnologie(string technologie);
     void setConector(string conector);
-    ~Memorie();
+    ~Memorie() override;
 };
 
 #endif //MEMORIE_HPP

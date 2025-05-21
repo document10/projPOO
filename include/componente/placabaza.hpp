@@ -37,7 +37,7 @@ public:
     void setConectori(string conectori);
     void setMaxMem(int maxMem);
     void setMemSlots(int memSlots);
-    ~PlacaBaza();
+    ~PlacaBaza() override;
 };
 
 #endif // PLACABAZA_HPP

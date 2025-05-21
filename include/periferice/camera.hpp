@@ -31,7 +31,7 @@ public:
     void setClasa(string clasa);
     void setRezolutie(int rezolutie);
     void setFPS(float fps);
-    ~Cam();
+    ~Cam() override;
 };
 
 #endif //CAM_HPP

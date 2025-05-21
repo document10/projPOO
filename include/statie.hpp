@@ -14,10 +14,11 @@ using namespace std;
 class Statie {
 private:
     LinkedList *head;
-    string nume;
+    string nume,cod;
 
 public:
-    Statie(string nume, LinkedList *head);
+    Statie(string nume, LinkedList *head,string cod);
+    Statie(string nume, Produs *p);
     Statie(const Statie &s);
     Statie(string numeFisier);
     void Add(Produs *p);
@@ -27,8 +28,10 @@ public:
     string ToFile();
     ~Statie();
     string getNume();
+    string getCod();
     LinkedList *getHead();
     void setNume(string nume);
+    void setCod(string cod);
     void LoadFromFile(string numeFisier);
     void SaveToFile(string numeFisier);
     static int Import(Statie *s[], string numeFolder);

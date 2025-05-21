@@ -19,7 +19,7 @@ public:
     Tastatura(string cod, string producator, string denumire, float pret, int stoc, string conexiune, string format, string taste, string iluminare);
     Tastatura(const Tastatura &t);
     Tastatura(string linie);
-    ~Tastatura();
+    ~Tastatura() override;
     string ToString() override;
     string ToFile() override;
     int getTip() override;

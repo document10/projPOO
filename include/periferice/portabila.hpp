@@ -33,7 +33,7 @@ public:
     void setCapacitate(float capacitate);
     void setReadSpeed(float readSpeed);
     void setWriteSpeed(float writeSpeed);
-    ~Portabila();
+    ~Portabila() override;
 };
 
 #endif // PORTABILA_HPP

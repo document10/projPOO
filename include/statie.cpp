@@ -14,16 +14,25 @@
 
 using namespace std;
 
-Statie::Statie(string nume, LinkedList *head)
+Statie::Statie(string nume, LinkedList *head, string cod)
 {
     this->nume = nume;
     this->head = head;
+    this->cod = cod;
+}
+
+Statie::Statie(string nume, Produs *p)
+{
+    this->nume = nume;
+    this->head = new LinkedList(p);
+    this->cod = to_string(nume.size());
 }
 
 Statie::Statie(const Statie &s)
 {
     this->nume = s.nume;
     this->head = new LinkedList(*s.head);
+    this->cod = s.cod;
 }
 
 Statie::Statie(string numeFisier)
@@ -61,17 +70,23 @@ string Statie::ToFile()
 {
     stringstream ss("");
     ss << this->nume << "\n"
+       << this->cod << "\n"
        << this->head->ToFile() << endl;
     return ss.str();
 }
 Statie::~Statie()
 {
-    delete this->head;
+    // this->head->Clear();
 }
 
 string Statie::getNume()
 {
     return this->nume;
+}
+
+string Statie::getCod()
+{
+    return this->cod;
 }
 
 LinkedList *Statie::getHead()
@@ -84,6 +99,11 @@ void Statie::setNume(string nume)
     this->nume = nume;
 }
 
+void Statie::setCod(string cod)
+{
+    this->cod = cod;
+}
+
 void Statie::LoadFromFile(string numeFisier)
 {
     this->head = new LinkedList(new Produs("0000", "NECUNOSCUT", "NEDENUMIT", 0.0f, 1));
@@ -91,24 +111,31 @@ void Statie::LoadFromFile(string numeFisier)
     if (!file.is_open())
         throw Exceptie("Eroare la deschiderea fisierului " + numeFisier, "Statie::LoadFromFile", "Eroare fisier");
     if (file.peek() == file.eof())
-        throw Exceptie("Fisierul " + numeFisier + " este gol!", "Statie::LoadFromFile", "Eroare fisier");
-    string line;
-    getline(file, line);
-    this->nume = line;
-    while (getline(file, line))
     {
-        Produs *p = this->head->ReadItem(line);
-        if (p != nullptr)
-            this->head->Add(p);
+        this->nume = "gol";
+        this->head = new LinkedList(new Produs("0000", "FARA", "NEDEFINIT", 0.0f, 0));
     }
-    this->head->Remove("0000");
-    file.close();
+    else
+    {
+        string line;
+        getline(file, line);
+        this->nume = line;
+        getline(file, line);
+        this->cod=line;
+        while (getline(file, line))
+        {
+            Produs *p = this->head->ReadItem(line);
+            if (p != nullptr)
+                this->head->Add(p);
+        }
+        this->head->Remove("0000");
+        file.close();
+    }
 }
 
 void Statie::SaveToFile(string numeFisier)
 {
     ofstream file(numeFisier);
-    cout<<this->ToFile();
     if (file.is_open())
     {
         file << this->ToFile();
