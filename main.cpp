@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <math.h>
+#include <ctime>
 
 //mecanism stocare produse
 #include "include/linkedlist.hpp"
@@ -51,6 +52,7 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {   
+    clock_t start = clock();
     string numeFisier = "produse.txt";
     string statiiDir = "statii/";
     if(!filesystem::exists(numeFisier)){
@@ -73,8 +75,8 @@ int main(int argc, char const *argv[])
             statii.push_back(sn);
         }
     }
-    else cout<<"#113#Nu exista statii in folderul "<<statiiDir<<endl;
-    
+    else cout<<"Nu exista statii in folderul "<<statiiDir<<endl;
+    cout<<"Timp incarcare: "<<(clock()-start)/static_cast<float>(CLOCKS_PER_SEC)<<" secunde"<<endl;
     int screenWidth = 1500;
     int screenHeight = 750;
     int buttonWidth = head->getMaxLength() * 7;
@@ -107,6 +109,7 @@ int main(int argc, char const *argv[])
     };
     string optext = "";
     string scrolltext = "";
+    string selected = head->Last().getCod();
 
     char buff0[100]="";
     char buff1[100]="";
@@ -126,7 +129,6 @@ int main(int argc, char const *argv[])
     Rectangle bounds = { 0, 0, 1000, static_cast<float>(screenHeight) };
     Rectangle content = { 10, 10, static_cast<float>(buttonWidth), static_cast<float>(head->Size() * 30) };
 
-    string selected = head->Last().getCod();
     Statie selst("GOL",new Produs("0000","NEDEFINIT","NEDEFINIT",0,0));
     if(statii.size()>0)selst=statii.back();
 
@@ -142,6 +144,7 @@ int main(int argc, char const *argv[])
     GuiSetStyle(BUTTON,BORDER_WIDTH,1);
     GuiSetStyle(DROPDOWNBOX, TEXT_ALIGNMENT, 0);
     Vector2 winsize={static_cast<float>(screenWidth),static_cast<float>(screenHeight)};
+    cout<<"Timp deschidere: "<<(clock()-start)/static_cast<float>(CLOCKS_PER_SEC)<<" secunde"<<endl;
     while (!WindowShouldClose())
     {
         winsize = (Vector2){static_cast<float>(GetRenderWidth()),static_cast<float>(GetRenderHeight())};
@@ -296,11 +299,22 @@ int main(int argc, char const *argv[])
                         }
                     case 4:{
                         GuiLabel((Rectangle){ bounds.width+10, 40, 150, 30 }, "#06#Copie de siguranta");
-                        GuiTextBox((Rectangle){ bounds.width+170, 40, 200, 30 }, buff2, 20, true);
-                        if(GuiButton((Rectangle){ bounds.width+380, 40, 100, 30 }, "#112#Confirma")&&strlen(buff2)>0)
-                        {
-                            head->SaveToFile(string(buff2)+".txt");
-                            strcpy(buff2,"");
+                        GuiTextBox((Rectangle){ bounds.width+150, 40, 220, 30 }, buff2, 20, true);
+                        if(strlen(buff2)!=0){
+                            if(GuiButton((Rectangle){ bounds.width+380, 40, 100, 30 }, "#112#Confirma")&&strlen(buff2)>0)
+                            {
+                                head->SaveToFile(string(buff2)+".txt");
+                                strcpy(buff2,"");
+                            }
+                            if(GuiButton((Rectangle){ bounds.width+380, 80, 100, 30 }, "#189#Ca .csv")){
+                                string text = head->ToFile();
+                                ofstream file(string(buff2)+".csv");
+                                replace(text.begin(),text.end(),',',';');
+                                replace(text.begin(),text.end(),'|',',');
+                                file<<text;
+                                file.close();
+                                strcpy(buff2,"");
+                            }
                         }
                         break;
                     }
@@ -409,16 +423,14 @@ int main(int argc, char const *argv[])
             
         EndDrawing();
     }
-
+    start = clock();
     CloseWindow();
-
+    
     head->Remove("0000");
-
     head->SaveToFile(numeFisier);
-
     for (vector<Statie>::iterator it = statii.begin();it!=statii.end();it++){
         it->SaveToFile(statiiDir+it->getCod()+".txt");
     }
-
+    cout<<"Timp inchidere: "<<(clock()-start)/static_cast<float>(CLOCKS_PER_SEC)<<" secunde"<<endl;
     return 0;
 }

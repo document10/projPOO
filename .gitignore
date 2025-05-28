@@ -6,6 +6,7 @@
 *.o
 # Exclude data files
 *.txt
+*.csv
 
 # Exclude executables
 main
