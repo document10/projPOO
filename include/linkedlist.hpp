@@ -20,6 +20,7 @@ public:
     LinkedList(Produs *data);
     LinkedList(const LinkedList &l);
     LinkedList(string numeFisier);
+    ~LinkedList();
     void Add(Produs *data);
     bool Remove(string cod);
     void Clear();
@@ -36,7 +37,6 @@ public:
     LinkedList operator=(const LinkedList &l);
     Produs *operator[](int index);
     void operator--(void);
-    ~LinkedList();
     static Produs* ReadItem(string linie);
 };
 

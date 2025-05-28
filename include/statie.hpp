@@ -21,12 +21,12 @@ public:
     Statie(string nume, Produs *p);
     Statie(const Statie &s);
     Statie(string numeFisier);
+    ~Statie();
     void Add(Produs *p);
     void Remove(string cod);
     float PretTotal();
     string ToString();
     string ToFile();
-    ~Statie();
     string getNume();
     string getCod();
     LinkedList *getHead();

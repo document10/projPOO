@@ -13,10 +13,11 @@ using namespace std;
 
 class Procesor : public Component
 {
-    private:
-    float frecventa,maxMem,memCache;
+private:
+    float frecventa, maxMem, memCache;
     int nuclee;
-    public:
+
+public:
     Procesor(string cod, string producator, string denumire, float pret, int stoc, int putere, float frecventa, int nuclee, float maxMem, float memCache);
     Procesor(const Procesor &p);
     Procesor(string linie);
@@ -35,4 +36,4 @@ class Procesor : public Component
     ~Procesor() override;
 };
 
-#endif //PROCESOR_HPP
+#endif // PROCESOR_HPP

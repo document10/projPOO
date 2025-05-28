@@ -1,4 +1,4 @@
-//baza
+//librarii de baza
 #include <iostream>
 #include <cstdlib>
 #include <stdio.h>
@@ -10,10 +10,13 @@
 #include <algorithm>
 #include <filesystem>
 #include <math.h>
+
 //mecanism stocare produse
 #include "include/linkedlist.hpp"
+
 //ierarhie date
 #include "include/produs.hpp"
+
 //componente
 #include "include/componente/component.hpp"
 #include "include/componente/procesor.hpp"
@@ -23,6 +26,7 @@
 #include "include/componente/placavideo.hpp"
 #include "include/componente/alimentare.hpp"
 #include "include/componente/carcasa.hpp"
+
 //periferice
 #include "include/periferice/periferic.hpp"
 #include "include/periferice/tastatura.hpp"
@@ -31,8 +35,10 @@
 #include "include/periferice/camera.hpp"
 #include "include/periferice/display.hpp"
 #include "include/periferice/portabila.hpp"
+
 //statii
 #include "include/statie.hpp"
+
 //tratare erori
 #include "include/exceptie.hpp"
 
@@ -105,8 +111,6 @@ int main(int argc, char const *argv[])
     char buff0[100]="";
     char buff1[100]="";
     char buff2[100]="";
-    // char buff3[100]="";
-    // char buff4[100]="";
     
     bool active = false;
     bool active2 = false;
@@ -282,7 +286,6 @@ int main(int argc, char const *argv[])
                                 if(GuiDropdownBox((Rectangle){ bounds.width+150, 75, 200, 30 },allst.c_str(),&addst,active5)){
                                     active5=!active5;
                                     if(!active5&&addst<static_cast<int>(statii.size())&&statii[addst].getHead()->Search(p->getCod())==nullptr){
-                                        cout<<"Adaugare produs in statia "<<statii[addst].getNume()<<endl;
                                         statii[addst].Add(p);
                                         statii[addst].SaveToFile(statiiDir+statii[addst].getCod()+".txt");
                                     }
@@ -410,11 +413,12 @@ int main(int argc, char const *argv[])
     CloseWindow();
 
     head->Remove("0000");
+
     head->SaveToFile(numeFisier);
-    cout<<"Stoc salvat!"<<endl;
+
     for (vector<Statie>::iterator it = statii.begin();it!=statii.end();it++){
         it->SaveToFile(statiiDir+it->getCod()+".txt");
     }
-    cout<<"Statii salvate!"<<endl;
+
     return 0;
 }

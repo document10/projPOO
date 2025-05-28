@@ -16,6 +16,7 @@ private:
 public:
     Exceptie(string mesaj,string sursa,string tip);
     Exceptie(const Exceptie &e);
+    ~Exceptie();
     string getMesaj();
     string getSursa();
     string getTip();
@@ -23,7 +24,6 @@ public:
     void setSursa(string sursa);
     void setTip(string tip);
     string ToString();
-    ~Exceptie();
     friend ostream& operator<<(ostream& os, const Exceptie& e);
 };
 
